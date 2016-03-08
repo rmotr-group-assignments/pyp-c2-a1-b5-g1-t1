@@ -240,7 +240,9 @@ def getDefend(boat):
 
 def defend():
     finished = False
-    boat_placed = False
+    sub_placed = False
+    air_placed = False
+    patrol_placed = False
     sub = {}
     aircraft = {}
     patrol = {}
@@ -251,25 +253,19 @@ def defend():
     print("  1 (p)atrol (size 2)")
     print("Place Boats!")
     while not finished:
-        sub = getDefend('sub')
-        aircraft = getDefend('aircraft')
-        patrol = getDefend('patrol')
-        if len(sub) == 3 and len(aircraft) == 3 and len(patrol) == 3:
-            while not boat_placed:
-                if not place_boat(int(sub['row']), int(sub['col']), 's', sub['orientation']):
-                    print("Boat already placed at location")
-                    break
-                if not place_boat(int(aircraft['row']), int(aircraft['col']), 'a', aircraft['orientation']):
-                    print("Boat already placed at location")
-                    break
-                if not place_boat(int(patrol['row']), int(patrol['col']), 'p', patrol['orientation']):
-                    print("Boat already placed at location")
-                    break
+        while not sub_placed:
+            sub = getDefend('sub')
+            sub_placed = place_boat(int(sub['row']), int(sub['col']), 's', sub['orientation'])
 
-                boat_placed = True
-                finished = True
-        else:
-            print("Invalid responses.")
+        while not air_placed:
+            aircraft = getDefend('aircraft')
+            air_placed = place_boat(int(aircraft['row']), int(aircraft['col']), 'a', aircraft['orientation'])
+
+        while not patrol_placed:
+            patrol = getDefend('patrol')
+            patrol_placed = place_boat(int(patrol['row']), int(patrol['col']), 'p', patrol['orientation'])
+
+        finished = True
 
     print_board(defender_board)
 
