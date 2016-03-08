@@ -37,15 +37,18 @@ def print_board(board):
         print " ".join(row)
         i += 1
 
-def check_position(row, col, boat_type, boat_length):
-    compare = [(row, col)]
-    for boat in boats:
-        for item in compare:
-            if item in boats[boat]['location']:
-                print(boats[boat]['location'])
-                print(item)
-                print('here')
+def check_position(row, col, boat_type, boat_length, orientation):
+    if orientation == 'vertical':
+        compare = [(row+i,col) for i in range(boat_length)]
+    elif orientation == 'horizontal':
+        compare = [(row,col+i) for i in range(boat_length)]
 
+    for boat in boats:
+        for x,y in boats[boat]['location']:
+            for a,b in compare:
+                if x == a and y == b:
+                    return True
+    
 def place_boat(row,col,boat_type,orientation):
     # How long is our boat
     if boat_type == 'p':
@@ -57,8 +60,11 @@ def place_boat(row,col,boat_type,orientation):
     else:
         raise 'UnknownBoatType'
 
-    if check_position(row, col, boat_type, boat_length):
+    if check_position(row, col, boat_type, boat_length, orientation):
         raise 'InvalidPosition'
+
+    if row not in range(10) and col not in range(10):
+        print("not in range") 
 
     # Which way is our boat going to be placed
     if orientation == 'vertical':
@@ -69,6 +75,8 @@ def place_boat(row,col,boat_type,orientation):
 
         # Add boat to defender board
         for i in range(boat_length):
+            if row+i not in range(10):
+                raise "Not valid range"
             defender_board[row+i][col] = boat_type
 
     elif orientation == 'horizontal':
@@ -78,6 +86,8 @@ def place_boat(row,col,boat_type,orientation):
 
         # Add boat to defender board
         for i in range(boat_length):
+            if col+i not in range(10):
+                raise "Not valid range"
             defender_board[row][col+i] = boat_type
     else:
         raise 'UnknownBoatOrientation'
