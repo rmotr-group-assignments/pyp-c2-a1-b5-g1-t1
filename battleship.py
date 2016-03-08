@@ -217,8 +217,68 @@ def attack():
 
         fire(int(new_row),int(new_col))
 
+def getDefend(boat):
+    result = {}
+
+    print("Enter grid for " + boat + " (row, col): ")
+    location = raw_input('Coordinates: ')
+    orientation = raw_input('Orientation: ')
+    row, col = location.split(',')
+
+    if orientation == 'vertical' or orientation == 'horizontal':
+        result['orientation'] = orientation
+    else:
+        print("invalid orientation")
+
+    if int(row) in range(10) and int(col) in range(10):
+        result['row'] = row
+        result['col'] = col
+    else:
+        print("out of range")
+
+    return result
+
 def defend():
-    pass
+    finished = False
+    boat_placed = False
+    sub = {}
+    aircraft = {}
+    patrol = {}
+
+    print("Your ships:")
+    print("  1 (s)ubmarine (size 3)")
+    print("  1 (a)ircraft (size 4)")
+    print("  1 (p)atrol (size 2)")
+    print("Place Boats!")
+    while not finished:
+        sub = getDefend('sub')
+        aircraft = getDefend('aircraft')
+        patrol = getDefend('patrol')
+        if len(sub) == 3 and len(aircraft) == 3 and len(patrol) == 3:
+            while not boat_placed:
+                if not place_boat(int(sub['row']), int(sub['col']), 's', sub['orientation']):
+                    print("Boat already placed at location")
+                    break
+                if not place_boat(int(aircraft['row']), int(aircraft['col']), 'a', aircraft['orientation']):
+                    print("Boat already placed at location")
+                    break
+                if not place_boat(int(patrol['row']), int(patrol['col']), 'p', patrol['orientation']):
+                    print("Boat already placed at location")
+                    break
+
+                boat_placed = True
+                finished = True
+        else:
+            print("Invalid responses.")
+
+    print_board(defender_board)
+
+    # Fire some shots until we win!
+    global win
+    while (win != True):
+       new_row = randint(0,9)
+       new_col = randint(0,9)
+       fire(new_row,new_col)
 
 def main():
     # TODO: Randomize placement
