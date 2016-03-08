@@ -221,8 +221,9 @@ def getDefend(boat):
     result = {}
 
     print("Enter grid for " + boat + " (row, col): ")
-    location = raw_input('Coordinates: ')
-    orientation = raw_input('Orientation: ')
+    location = raw_input('Coordinates (ex: 1,1): ')
+    print("Enter orientation: vertical | horizontal")
+    orientation = raw_input('Orientation (ex: vertical): ')
     row, col = location.split(',')
 
     if orientation == 'vertical' or orientation == 'horizontal':
