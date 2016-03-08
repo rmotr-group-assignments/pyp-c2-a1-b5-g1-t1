@@ -148,7 +148,7 @@ def fire(row,col):
 
                 # Put successful hit into boats dict to check for sunk
                 boats[boat]['hits'].append((row,col))
-
+                check_sunk(boat)
             else:
                 print 'You missed!'
                 mark_attacker_board(row,col,'X')
