@@ -58,39 +58,48 @@ def place_boat(row,col,boat_type,orientation):
     elif boat_type == 'a':
         boat_length = 4
     else:
-        raise 'UnknownBoatType'
-
+        #raise 'UnknownBoatType'
+        return False
     if check_position(row, col, boat_type, boat_length, orientation):
-        raise 'InvalidPosition'
+        #raise 'InvalidPosition'
+        return False
 
     if row not in range(10) and col not in range(10):
-        print("not in range")
+        #print("not in range")
+        return False
 
     # Which way is our boat going to be placed
     if orientation == 'vertical':
         # col is constant
 
-        # Add boat to boats dict
-        boats[boat_type]['location'] = [(row+i,col) for i in range(boat_length)]
 
         # Add boat to defender board
         for i in range(boat_length):
             if row+i not in range(10):
-                raise "Not valid range"
+                #raise "Not valid range"
+                return False
             defender_board[row+i][col] = boat_type
+
+        # Add boat to boats dict
+        boats[boat_type]['location'] = [(row+i,col) for i in range(boat_length)]
+        return True
 
     elif orientation == 'horizontal':
         # row is constant
-        # Add boat to boats dict
-        boats[boat_type]['location'] = [(row,col+i) for i in range(boat_length)]
 
         # Add boat to defender board
         for i in range(boat_length):
             if col+i not in range(10):
-                raise "Not valid range"
+                #raise "Not valid range"
+                return False
             defender_board[row][col+i] = boat_type
+
+        # Add boat to boats dict
+        boats[boat_type]['location'] = [(row,col+i) for i in range(boat_length)]
+        return True
     else:
-        raise 'UnknownBoatOrientation'
+        #raise 'UnknownBoatOrientation'
+        return False
 
 
 def check_win():
@@ -187,22 +196,22 @@ def check_boat_position(row, col, boat_type, orientation):
 def attack():
     new_boats = ['p','s','a']
     for b in new_boats:
-        new_row = randint(0,7)
-        new_col = randint(0,7)
-        new_orientation = randint(0,1)
+        boat_placed = False
 
-        if new_orientation == 0:
-
-            place_boat(new_row, new_col, b, 'horizontal')
-        else:
-            place_boat(new_row, new_col, b, 'vertical')
+        while not boat_placed:
+            new_row = randint(0,7)
+            new_col = randint(0,7)
+            new_orientation = randint(0,1)
+            if new_orientation == 0:
+                boat_placed = place_boat(new_row, new_col, b, 'horizontal')
+            else:
+                boat_placed = place_boat(new_row, new_col, b, 'vertical')
 
         #print_board(defender_board)
 
     print_board(attacker_board)
     global win
     while not win:
-
         new_row = raw_input('Row: ')
         new_col = raw_input('Column: ')
 
