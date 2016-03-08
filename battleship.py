@@ -37,9 +37,16 @@ def print_board(board):
         print " ".join(row)
         i += 1
 
+def check_position(row, col, boat_type, boat_length):
+    compare = [(row, col)]
+    for boat in boats:
+        for item in compare:
+            if item in boats[boat]['location']:
+                print(boats[boat]['location'])
+                print(item)
+                print('here')
+
 def place_boat(row,col,boat_type,orientation):
-    # TODO Check row/col range
-    
     # How long is our boat
     if boat_type == 'p':
         boat_length = 2
@@ -50,9 +57,13 @@ def place_boat(row,col,boat_type,orientation):
     else:
         raise 'UnknownBoatType'
 
+    if check_position(row, col, boat_type, boat_length):
+        raise 'InvalidPosition'
+
     # Which way is our boat going to be placed
     if orientation == 'vertical':
         # col is constant
+        
         # Add boat to boats dict
         boats[boat_type]['location'] = [(row+i,col) for i in range(boat_length)]
 
@@ -64,11 +75,13 @@ def place_boat(row,col,boat_type,orientation):
         # row is constant
         # Add boat to boats dict
         boats[boat_type]['location'] = [(row,col+i) for i in range(boat_length)]
+
         # Add boat to defender board
         for i in range(boat_length):
             defender_board[row][col+i] = boat_type
     else:
         raise 'UnknownBoatOrientation'
+
 
 def check_win():
     if {boat for boat, info in boats.items() if not info['sunk']}:
@@ -134,6 +147,50 @@ def fire(row,col):
 def mark_attacker_board(row,col,boat_type):
     attacker_board[row][col] = boat_type
 
+def check_boat_position(row, col, boat_type, orientation):
+    
+    if boat_type == 'p':
+        boat_size = 2
+    elif boat_type == 's':
+        boat_size = 3
+    elif boat_size == 'a':
+        boat_size = 4
+    else:
+        raise 'InvalidBoatType'
+
+    check_positions = []
+    for p in range(boat_size):
+        if orientation == 'horizontal':
+            check_positions.append((row, col+p))
+        elif orientation == 'veritical':
+            check_positions.append((row+p, col))
+        else:
+            raise 'InvalidOrientation'
+            
+    for b,i in boats.items():
+        for pos in check_positions:
+            if pos in boats[b]['positions']:
+                print pos
+                print boats[b]['positions']
+
+
+def attack():
+    new_boats = ['p','s','a']
+    for b in new_boats:
+        new_row = randint(0,7)
+        new_col = randint(0,7)
+        new_orientation = randint(0,1)
+    
+        if new_orientation == 0:
+            
+            place_boat(new_row, new_col, b, 'horizontal')
+        else:
+            place_boat(new_row, new_col, b, 'vertical')
+
+        print_board(defender_board)
+def defend():
+    pass
+
 def main():
     # TODO: Randomize placement
     # Place patrol boat
@@ -154,4 +211,23 @@ def main():
        fire(new_row,new_col)
     
 if __name__ == "__main__":
-    main()
+    #main()
+    
+    selection = False
+    
+    while not selection:
+        print "Chose mode:"
+        print "1. Attack"
+        print "2. Defend"
+        mode = raw_input('Selection?: ')
+        if mode == "1":
+            print "Ok lets attack!"
+            selection = True
+            attack()
+        elif mode == "2":
+            print "Ok lets defend!"
+            selection = True
+            defend()
+        else:
+            print "Please select a mode! 1 or 2!"
+
