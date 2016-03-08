@@ -148,7 +148,6 @@ def fire(row,col):
 
                 # Put successful hit into boats dict to check for sunk
                 boats[boat]['hits'].append((row,col))
-                check_sunk(boat)
 
             else:
                 print 'You missed!'
@@ -258,24 +257,37 @@ def defend():
             sub = getDefend('sub')
             sub_placed = place_boat(int(sub['row']), int(sub['col']), 's', sub['orientation'])
 
+        print_board(defender_board)
+
         while not air_placed:
             aircraft = getDefend('aircraft')
             air_placed = place_boat(int(aircraft['row']), int(aircraft['col']), 'a', aircraft['orientation'])
+
+        print_board(defender_board)
 
         while not patrol_placed:
             patrol = getDefend('patrol')
             patrol_placed = place_boat(int(patrol['row']), int(patrol['col']), 'p', patrol['orientation'])
 
         finished = True
+        print_board(defender_board)
 
-    print_board(defender_board)
 
     # Fire some shots until we win!
     global win
     while (win != True):
        new_row = randint(0,9)
        new_col = randint(0,9)
-       fire(new_row,new_col)
+       result = fire(new_row, new_col)
+       answer = raw_input("hit, miss, sunk? ")
+       if answer == 'hit':
+         print("you hit a ship")
+       elif answer == 'miss':
+         print("you missed a ship")
+       elif answer == 'sunk':
+         print("you sunk a ship")
+
+       print_board(defender_board)
 
 def main():
     # TODO: Randomize placement
